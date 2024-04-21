@@ -10,8 +10,12 @@ macro_rules! display {
 
 fn main() {
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("can't find manifest dir"));
-    let img_path = env::var("MOUNT_IMG_PATH").unwrap_or("mount.img".into());
+    let img_relative_path = env::var("MOUNT_IMG_PATH").unwrap_or("mount.img".into());
+    let project_dir =
+        PathBuf::from(env::var("ROOT_MANIFEST_DIR").expect("can't find manifest directory"));
 
+    let img_path = project_dir.join(img_relative_path);
+    let img_path = img_path.to_str().expect("can't build a valid img path");
     fs::write(
         out_dir.join("inc.S"),
         format!(
